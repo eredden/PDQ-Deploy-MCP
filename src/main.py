@@ -159,7 +159,7 @@ def get_package_schedules(package_id: int | None = None) -> list[dict]:
 
 @MCP_SERVER.tool()    
 def get_package_steps(package_id: int) -> list[dict]:
-    """Get ordered execution steps for a specific package, including install/command details."""
+    """Get ordered execution steps for a specific package."""
 
     query = """
         SELECT
