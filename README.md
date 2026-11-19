@@ -28,18 +28,24 @@ pip install -e .
 
 ## Setup
 
-You will need to grab a copy of a PDQ Deploy database from `C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db` on the desired PDQ server. This MCP server requires the `PDQ_DEPLOY_DB` environment variable to point to your SQLite database. Create that environment variable using the PowerShell cmdlet below:
-
-```powershell
-$Env:PDQ_DEPLOY_DB = "C:\Your\Path\Here\Database.db"
-```
+You will need a copy of the PDQ Deploy database `C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db` from the desired PDQ server. This will be supplied to the MCP server using the `--db-path` argument, so place it in a location where it is accessible to the MCP server. If you are using the `.mcp.json` config provided for GitHub Copilot in this repository, then you will want to place the .db file in `.\db\Database.db`.
 
 You are responsible for keeping your database copy up-to-date. **Avoid pointing this MCP server at a live PDQ Deploy database,** as doing so may cause performance and mutex issues for other users.
 
 ## Usage
 
-1. Open your cloned repository in VS Code and select **Ctrl + Shift + P** to open the Command Palette.
-2. Select the `MCP: List Servers` option and start the `pdq-deploy-mcp` server.
-3. Select **Ctrl + Alt + I** to open the interactive chat window. You will need to sign into GitHub Copilot before you can use the provided LLMs.
-4. Ask a question! e.g., who was responsible for the .NET 10 deployment last weekend?
-5. Get your answer back! Rinse and repeat.
+### Visual Studio Code
+
+1. Open this repository in Visual Studio Code.
+2. Open the .mcp.json file and select Start above the `pdq-deploy-mcp` string.
+3. Open the Interactive Chat in VS Code using `CTRL + Alt + I` and ask questions about the database from there!
+
+### Other Coding Assistants
+
+You can run this MCP server manually using the following command:
+
+```bash
+python ".\server\server.py" --db-path ".\path\to\your\Database.db"
+```
+
+As for how to integrate it with other coding asisstants, it depends on your LLM assistant! Feel free to contribute information here if you find a way to do this.
