@@ -260,7 +260,7 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
         return [dict(row) for row in cursor.fetchmany(max_rows)]
 
 
-if __name__ == "__main__":
+def main() -> None:
     parser = ArgumentParser(
         prog="PDQ Deploy MCP Server",
         description="An MCP server for read-only access to the PDQ Deploy database."
@@ -283,3 +283,7 @@ if __name__ == "__main__":
         raise ValueError("You must supply the PDQ Deploy SQLite database path with the --db-path argument.")
 
     MCP_SERVER.run(transport="stdio")
+
+
+if __name__ == "__main__":
+    main()
