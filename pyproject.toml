@@ -1,0 +1,17 @@
+[build-system]
+requires = [
+    "setuptools >= 70.0"
+]
+
+[project]
+name = "pdq-deploy-mcp"
+version = "0.1.0"
+authors = [ {name = "Evan Redden", email = "redden.evan@gmail.com"} ]
+description = "An MCP server for read-only access to the PDQ Deploy database."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=2.0.0"
+]

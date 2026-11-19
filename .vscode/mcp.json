@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "pdq-deploy-mcp": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "${workspaceFolder}\\src\\main.py"
+      ]
+    }
+  }
+}
