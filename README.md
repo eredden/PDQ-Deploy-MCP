@@ -2,7 +2,7 @@
 
 This project is an MCP (Model Context Protocol) server that provides **read-only** access to PDQ Deploy data through a local PDQ Deploy SQLite database. You can simply ask a question in plain English and have an AI agent query the PDQ Deploy database *for you!* This is good for open-ended, complex problems.
 
-This project was created by [Evan Redden](https://github.com/eredden/PDQ-MCP), the Red Baron ruling over this repository! (If you know, you know.)
+This project was created by [Evan Redden](https://www.linkedin.com/in/eredden).
 
 ## Requirements
 
@@ -38,6 +38,8 @@ You are responsible for keeping your database copy up-to-date. **Avoid pointing 
 
 ## Usage
 
-Open your cloned repository in VS Code and select **Ctrl + Shift + P** to open the Command Palette. Select the `MCP: List Servers` option and start the `pdq-deploy-mcp` server. 
-
-Once that is up and running, you can use **Ctrl + Alt + I** to open the interactive chat window and communicate with GitHub Copilot from there! You will need to sign into GitHub Copilot for this to work.
+1. Open your cloned repository in VS Code and select **Ctrl + Shift + P** to open the Command Palette.
+2. Select the `MCP: List Servers` option and start the `pdq-deploy-mcp` server.
+3. Select **Ctrl + Alt + I** to open the interactive chat window. You will need to sign into GitHub Copilot before you can use the provided LLMs.
+4. Ask a question! e.g., who was responsible for the .NET 10 deployment last weekend?
+5. Get your answer back! Rinse and repeat.
