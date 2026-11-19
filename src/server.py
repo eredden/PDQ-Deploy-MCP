@@ -1,25 +1,26 @@
-# main.py - The PDQ Deploy MCP server.
+# server.py - The PDQ Deploy MCP server.
 
 from __future__ import annotations
+
+from argparse import ArgumentParser
 from contextlib import contextmanager
 from mcp.server import MCPServer
+from pathlib import Path
 
-import os
 import sqlite3
 
 MCP_SERVER = MCPServer("PDQ Deploy")
-DB_PATH = os.getenv("PDQ_DEPLOY_DB")
-
+DB_PATH: Path = None
 
 @contextmanager
 def get_db_cursor():
     """Open a short-lived, read-only connection and yields a cursor."""
 
-    if not os.path.exists(DB_PATH):
+    if DB_PATH is None or not DB_PATH.is_file():
         raise FileNotFoundError(f"{DB_PATH} not found.")
 
     # The mode=ro flag forces the file to open in Read Only (RO) mode.
-    db_uri = f"file:///{DB_PATH}?mode=ro"
+    db_uri = f"{Path(DB_PATH).resolve().as_uri()}?mode=ro"
 
     conn = sqlite3.connect(db_uri, uri=True, timeout=5.0)
     conn.row_factory = sqlite3.Row # Replaces tuple rows with dict rows.
@@ -260,7 +261,25 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
 
 
 if __name__ == "__main__":
-    if not DB_PATH or not os.path.exists(DB_PATH):
-        raise ValueError("The PDQ_DEPLOY_DB environment variable must point to a PDQ Deploy SQLite database.")
+    parser = ArgumentParser(
+        prog="PDQ Deploy MCP Server",
+        description="An MCP server for read-only access to the PDQ Deploy database."
+    )
+
+    parser.add_argument(
+        "--db-path",
+        "--db",
+        dest="db_path",
+        required=True,
+        type=str,
+        help="Path to the SQLite database used by the server."
+    )
+
+    args = parser.parse_args()
+
+    DB_PATH = Path(args.db_path).expanduser() if args.db_path else None
+
+    if DB_PATH is None or not DB_PATH.is_file():
+        raise ValueError("You must supply the PDQ Deploy SQLite database path with the --db-path argument.")
 
     MCP_SERVER.run(transport="stdio")

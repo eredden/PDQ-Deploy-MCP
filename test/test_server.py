@@ -1,13 +1,30 @@
-# test.py - A simple test client for the PDQ Deploy MCP server.
+# test_server.py - A simple test client for the PDQ Deploy MCP server.
 
+from argparse import ArgumentParser
 import asyncio
+from pathlib import Path
+import sys
+
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 async def main():
+    parser = ArgumentParser(description="Test the PDQ Deploy MCP server.")
+
+    parser.add_argument(
+        "--db-path",
+        required=True,
+        help="Path to the SQLite database used by the server.",
+    )
+    args = parser.parse_args()
+
     server_params = StdioServerParameters(
-        command="python",
-        args=["src/main.py"],
+        command=sys.executable,
+        args=[
+            str(Path(__file__).resolve().with_name("server.py")),
+            "--db-path",
+            args.db_path,
+        ],
     )
 
     async with stdio_client(server_params) as (read, write):
