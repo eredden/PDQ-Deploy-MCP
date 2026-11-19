@@ -4,9 +4,9 @@
       "type": "local",
       "command": "python",
       "args": [
-        "src\\server.py",
+        "./src/server.py",
         "--db-path",
-        "db\\Database.db"
+        "./db/Database.db"
       ],
       "tools": ["*"]
     }
