@@ -194,6 +194,21 @@ def get_tables() -> list[str]:
 
 
 @MCP_SERVER.tool()
+def get_table_schema(table_name: str) -> list[dict]:
+    """Get column names and types for a specific table."""
+
+    valid_tables = get_tables()
+
+    if table_name not in valid_tables:
+        raise ValueError(f"Unknown table: {table_name}")
+
+    with get_db_cursor() as cursor:    
+        cursor.execute(f"PRAGMA table_info({table_name});")
+
+        return [dict(row) for row in cursor.fetchall()]
+
+
+@MCP_SERVER.tool()
 def get_target_lists(target_list_id: int | None = None) -> list[dict]:
     """Get all Target Lists or the specific computer targets inside a given target_list_id."""
 
