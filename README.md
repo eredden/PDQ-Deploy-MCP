@@ -45,7 +45,7 @@ You are responsible for keeping your database copy up-to-date. **Avoid pointing 
 You can run this MCP server manually using the following command:
 
 ```bash
-python ".\server\server.py" --db-path ".\path\to\your\Database.db"
+python ".\src\server.py" --db-path ".\path\to\your\Database.db"
 ```
 
 As for how to integrate it with other coding asisstants, it depends on your LLM assistant! Feel free to contribute information here if you find a way to do this.
