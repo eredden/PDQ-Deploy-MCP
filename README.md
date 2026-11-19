@@ -34,11 +34,11 @@ You are responsible for keeping your database copy up-to-date. **Avoid pointing 
 
 ## Usage
 
-### Visual Studio Code
+### GitHub Copilot in Visual Studio Code
 
 1. Open this repository in Visual Studio Code.
 2. Open the .mcp.json file and select Start above the `pdq-deploy-mcp` string.
-3. Open the Interactive Chat in VS Code using `CTRL + Alt + I` and ask questions about the database from there!
+3. Open the Interactive Chat in VS Code using `CTRL + Alt + I` and ask Copilot questions about the database from there!
 
 ### Other Coding Assistants
 
