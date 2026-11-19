@@ -261,6 +261,8 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
 
 
 def main() -> None:
+    global DB_PATH
+
     parser = ArgumentParser(
         prog="PDQ Deploy MCP Server",
         description="An MCP server for read-only access to the PDQ Deploy database."
