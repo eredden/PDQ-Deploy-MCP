@@ -21,7 +21,7 @@ async def main():
     server_params = StdioServerParameters(
         command=sys.executable,
         args=[
-            str(Path(__file__).resolve().with_name("server.py")),
+            "./src/server.py",
             "--db-path",
             args.db_path,
         ],
