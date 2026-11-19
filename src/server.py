@@ -7,6 +7,7 @@ from contextlib import contextmanager
 from mcp.server import MCPServer
 from pathlib import Path
 
+import base64
 import sqlite3
 
 MCP_SERVER = MCPServer("PDQ Deploy")
@@ -91,7 +92,7 @@ def get_deployments(
     with get_db_cursor() as cursor:
         cursor.execute(query, tuple(params))
 
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
     
 @MCP_SERVER.tool()
@@ -120,7 +121,7 @@ def get_packages(search: str | None = None) -> list[dict]:
             )
 
         # We convert the list of sqlite3.Row objects into a list of dict objects.
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
     
 @MCP_SERVER.tool()
@@ -155,7 +156,7 @@ def get_package_schedules(package_id: int | None = None) -> list[dict]:
     with get_db_cursor() as cursor:
         cursor.execute(query, params)
 
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
 
 @MCP_SERVER.tool()    
@@ -178,7 +179,7 @@ def get_package_steps(package_id: int) -> list[dict]:
     with get_db_cursor() as cursor:
         cursor.execute(query, (package_id,))
 
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
 
 @MCP_SERVER.tool()
@@ -206,7 +207,7 @@ def get_table_schema(table_name: str) -> list[dict]:
     with get_db_cursor() as cursor:    
         cursor.execute(f"PRAGMA table_info({table_name});")
 
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
 
 @MCP_SERVER.tool()
@@ -237,7 +238,7 @@ def get_target_lists(target_list_id: int | None = None) -> list[dict]:
                 (target_list_id,),
             )
 
-        return [dict(row) for row in cursor.fetchall()]
+        return [_serialize_row(row) for row in cursor.fetchall()]
 
 
 @MCP_SERVER.tool()
@@ -257,7 +258,24 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
     with get_db_cursor() as cursor:
         cursor.execute(cleaned)
 
-        return [dict(row) for row in cursor.fetchmany(max_rows)]
+        return [_serialize_row(row) for row in cursor.fetchmany(max_rows)]
+
+
+def _serialize_row(row: sqlite3.Row) -> dict:
+    """Convert a sqlite3.Row object into a dictionary with base64-encoded values."""
+
+    serialized = {}
+    for key in row.keys():
+        value = row[key]
+
+        if isinstance(value, bytes):
+            # Encode binary data as base64 to ensure safe transmission.
+            serialized[key] = base64.b64encode(value).decode("utf-8")
+
+        else:
+            serialized[key] = value
+
+    return serialized
 
 
 def main() -> None:
