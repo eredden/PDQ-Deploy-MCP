@@ -1,6 +1,6 @@
 # PDQ Deploy MCP Server
 
-This project is an MCP (Model Context Protocol) server that provides **read-only** access to PDQ Deploy data through a local PDQ Deploy SQLite database. You can simply ask a question in plain English and have an AI agent query the PDQ Deploy database *for you!* This is good for open-ended, complex problems.
+This project is an MCP (Model Context Protocol) server that provides **read-only** access to PDQ Deploy through a clone of its SQLite database. You can simply ask a question in plain English and have an AI agent query  PDQ Deploy *for you!* This works well for open-ended, complex problems and questions that you can wait on while eating lunch.
 
 This project was created by [Evan Redden](https://www.linkedin.com/in/eredden).
 
@@ -14,23 +14,29 @@ This project was created by [Evan Redden](https://www.linkedin.com/in/eredden).
 
 Clone the repository locally:
 
-```bash
-git clone https://github.com/eredden/PDQ-Deploy-MCP
+```powershell
+git clone "https://github.com/eredden/PDQ-Deploy-MCP"
 
-cd PDQ-Deploy-MCP
+cd "PDQ-Deploy-MCP"
 ```
 
 Install the required MCP server dependencies from `pyproject.toml`:
 
-```bash
+```powershell
 pip install -e .
 ```
 
 ## Setup
 
-You will need a copy of the PDQ Deploy database `C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db` from the desired PDQ server. This will be supplied to the MCP server using the `--db-path` argument, so place it in a location where it is accessible to the MCP server. If you are using the `.mcp.json` config provided for GitHub Copilot in this repository, then you will want to place the .db file in `.\db\Database.db`.
+You must create a clone of your PDQ Deploy SQLite database to read from. Do not use  `Copy-Item` or `robocopy` to copy the database, as copying mid-write will corrupt your clone. Use the native [BackupDatabase command](https://docs.pdq.com/current-version/Deploy/index.html?cli-deploy-backupdatabase.htm) provided with PDQ Deploy to avoid corruption:
 
-You are responsible for keeping your database copy up-to-date. **Avoid pointing this MCP server at a live PDQ Deploy database,** as doing so may cause performance and mutex issues for other users.
+```powershell
+PDQDeploy BackupDatabase -Path "C:\Backups\PDQ\" -Force
+```
+
+If you are using the `.mcp.json` config provided for GitHub Copilot in this repository, then save the database in the default `.\db\Database.db` path of this repository.
+
+**Do not point this MCP server at a live PDQ Deploy database.** Using the live database will create SHARED locks that prevent PDQ Deploy from writing to the SQLite database.
 
 ## Usage
 
@@ -38,7 +44,9 @@ You are responsible for keeping your database copy up-to-date. **Avoid pointing 
 
 1. Open this repository in Visual Studio Code.
 2. Open the .mcp.json file and select Start above the `pdq-deploy-mcp` string.
-3. Open the Interactive Chat in VS Code using `CTRL + Alt + I` and ask Copilot questions about the database from there!
+3. Open the Interactive Chat in Visual Studio Code using `CTRL + Alt + I`.
+4. If you have not already authenticated with GitHub Coplot, then do that! 
+5. Ask GitHub Copilot about anything related to PDQ Deploy!
 
 ### Other Coding Assistants
 
@@ -48,4 +56,4 @@ You can run this MCP server manually using the following command:
 python ".\src\server.py" --db-path ".\path\to\your\Database.db"
 ```
 
-As for how to integrate it with other coding asisstants, it depends on your LLM assistant! Feel free to contribute information here if you find a way to do this.
+As for how to integrate it with other AI coding assistants, figure it out! Feel free to contribute information here if you find a way to do this.
