@@ -271,6 +271,7 @@ def _serialize_row(row: sqlite3.Row) -> dict:
 
         if isinstance(value, bytes):
             # Encode binary data as base64 to ensure safe transmission.
+            # This is necessary because bytecode cannot be converted to JSON directly.
             serialized[key] = base64.b64encode(value).decode("utf-8")
 
         else:
