@@ -44,9 +44,12 @@ def get_deployments(
     package_id: int | None = None,
     start_date: str | None = None,
     end_date: str | None = None,
-    limit: int = 50,
+    max_rows: int = 100,
 ) -> list[dict]:
     """Get deployment history filtered by optional package_id and ISO date range (YYYY-MM-DD)."""
+
+    if max_rows < 1:
+            raise ValueError("max_rows must be greater than or equal to 1.")
 
     conditions = []
     params = []
@@ -64,7 +67,7 @@ def get_deployments(
         params.append(end_date)
 
     where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-    params.append(limit)
+    params.append(max_rows)
 
     # UserName is the user performing the PDQ job on the hosts,
     # while DeployConsoleUser is the person who started the job.
@@ -94,8 +97,62 @@ def get_deployments(
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-# TODO: Write get_deployment_failures() to retrieve the latest deployment failures 
-# for a given date range, optionally filtered by package_id.
+@MCP_SERVER.tool()
+def get_deployment_failures(
+    start_date: str | None = None,
+    end_date: str | None = None,
+    package_id: int | None = None,
+    max_rows: int = 100
+) -> list[dict]:
+    """Get the latest failed deployment targets filtered by date range and optional package_id."""
+
+    if max_rows < 1:
+        raise ValueError("max_rows must be greater than or equal to 1.")
+
+    conditions = [
+        """(
+            COALESCE(dc.Error, '') <> ''
+            OR LOWER(COALESCE(dc.Status, '')) LIKE '%fail%'
+            OR LOWER(COALESCE(dc.Stage, '')) LIKE '%fail%'
+        )"""
+    ]
+    params = []
+
+    if start_date:
+        conditions.append("d.Started >= ?")
+        params.append(start_date)
+
+    if end_date:
+        conditions.append("d.Started <= ?")
+        params.append(end_date)
+
+    if package_id is not None:
+        conditions.append("d.PackageId = ?")
+        params.append(package_id)
+
+    params.append(max_rows)
+    query = f"""
+        SELECT
+            dc.DeploymentId,
+            d.PackageId,
+            d.PackageName,
+            d.Started,
+            dc.Name,
+            dc.Status,
+            dc.Error,
+            dc.Stage,
+            dc.Ended
+        FROM DeploymentComputers dc
+        JOIN Deployments d ON d.DeploymentId = dc.DeploymentId
+        WHERE {' AND '.join(conditions)}
+        ORDER BY d.Started DESC, dc.DeploymentComputerId DESC
+        LIMIT ?;
+    """
+
+    with get_db_cursor() as cursor:
+        cursor.execute(query, tuple(params))
+
+        return [_sanitize_row(row) for row in cursor.fetchall()]
 
     
 @MCP_SERVER.tool()
@@ -250,6 +307,9 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
     Results are capped to 100 rows by default. Change the value of max_rows to bypass this.
     Note that leading comments will cause this function to reject the query, so please avoid them.
     """
+
+    if max_rows < 1:
+        raise ValueError("max_rows must be greater than or equal to 1.")
 
     cleaned = sql.strip()
 
