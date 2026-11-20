@@ -46,7 +46,7 @@ def get_deployments(
     end_date: str | None = None,
     max_rows: int = 100,
 ) -> list[dict]:
-    """Get deployment history filtered by optional package_id and ISO date range (YYYY-MM-DD)."""
+    """Get deployment history filtered by optional package_id and inclusive ISO date range (YYYY-MM-DD)."""
 
     if max_rows < 1:
             raise ValueError("max_rows must be greater than or equal to 1.")
@@ -63,7 +63,7 @@ def get_deployments(
         params.append(start_date)
 
     if end_date:
-        conditions.append("d.Started <= ?")
+        conditions.append("d.Started < date(?, '+1 day')")
         params.append(end_date)
 
     where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
@@ -104,7 +104,7 @@ def get_deployment_failures(
     package_id: int | None = None,
     max_rows: int = 100
 ) -> list[dict]:
-    """Get the latest failed deployment targets filtered by date range and optional package_id."""
+    """Get failed deployment targets filtered by inclusive date range and optional package_id."""
 
     if max_rows < 1:
         raise ValueError("max_rows must be greater than or equal to 1.")
@@ -123,7 +123,7 @@ def get_deployment_failures(
         params.append(start_date)
 
     if end_date:
-        conditions.append("d.Started <= ?")
+        conditions.append("d.Started < date(?, '+1 day')")
         params.append(end_date)
 
     if package_id is not None:
