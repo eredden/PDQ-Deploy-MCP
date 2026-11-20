@@ -161,7 +161,7 @@ def get_package_schedules(package_id: int | None = None) -> list[dict]:
 
 @MCP_SERVER.tool()    
 def get_package_steps(package_id: int) -> list[dict]:
-    """Get ordered execution steps for a specific package."""
+    """Get the sequence of steps for a specific package."""
 
     query = """
         SELECT
@@ -184,7 +184,7 @@ def get_package_steps(package_id: int) -> list[dict]:
 
 @MCP_SERVER.tool()
 def get_tables() -> list[str]:
-    """Get a list of all the database tables."""
+    """Get a list of all the database tables excluding SQLite system tables."""
 
     # We use sqlite_master as the master table since PDQ Deploy and Inventory use an older version
     # of SQLite. Newer versions of SQLite use the sqlite_schema table instead.
@@ -212,7 +212,7 @@ def get_table_schema(table_name: str) -> list[dict]:
 
 @MCP_SERVER.tool()
 def get_target_lists(target_list_id: int | None = None) -> list[dict]:
-    """Get all Target Lists or the specific computer targets inside a given target_list_id."""
+    """Get all target lists or the specific computer targets inside a given target_list_id."""
 
     with get_db_cursor() as cursor:
         if target_list_id is None:
@@ -246,6 +246,7 @@ def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
     """
     Execute a custom read-only SELECT or WITH query for questions not covered by standard tools.
     Results are capped to 100 rows by default. Change the value of max_rows to bypass this.
+    Note that leading comments will cause this function to reject the query, so please avoid them.
     """
 
     cleaned = sql.strip()
