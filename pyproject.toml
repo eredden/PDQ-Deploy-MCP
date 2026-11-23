@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdq-deploy-mcp"
-version = "1.0.0"
+version = "1.0.1"
 authors = [ {name = "Evan Redden", email = "redden.evan@gmail.com"} ]
 description = "An MCP server for read-only access to the PDQ Deploy database."
 readme = "README.md"

@@ -7,12 +7,12 @@
     "url": "https://github.com/eredden/PDQ-Deploy-MCP",
     "source": "github"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packages": [
     {
       "registryType": "pypi",
       "identifier": "pdq-deploy-mcp",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "transport": {
         "type": "stdio"
       },
