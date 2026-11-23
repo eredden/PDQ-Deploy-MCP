@@ -1,6 +1,7 @@
 {
   "mcpServers": {
     "pdq-deploy-mcp": {
+      "type": "stdio",
       "command": "pdq-deploy-mcp",
       "args": [
         "--db-path",
