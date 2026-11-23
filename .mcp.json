@@ -1,15 +1,11 @@
 {
   "mcpServers": {
     "pdq-deploy-mcp": {
-      "type": "local",
-      "command": "python",
+      "command": "pdq-deploy-mcp",
       "args": [
-        "-m", 
-        "pdq_deploy_mcp.server", 
-        "--db-path", 
+        "--db-path",
         "./db/Database.db"
-      ],
-      "tools": ["*"]
+      ]
     }
   }
 }
