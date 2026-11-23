@@ -5,12 +5,20 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from contextlib import contextmanager
 from mcp.server import MCPServer
+from mcp.types import ToolAnnotations
 from pathlib import Path
 
 import sqlite3
 
 MCP_SERVER = MCPServer("PDQ Deploy")
 DB_PATH: Path = None
+
+READ_ONLY_DB_ANNOTATIONS = ToolAnnotations(
+    read_only_hint=True,
+    destructive_hint=False,
+    idempotent_hint=True,
+    open_world_hint=False,
+)
 
 @contextmanager
 def get_db_cursor():
@@ -39,7 +47,7 @@ def get_db_cursor():
         conn.close()
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_deployments(
     package_id: int | None = None,
     start_date: str | None = None,
@@ -97,7 +105,7 @@ def get_deployments(
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_deployment_failures(
     start_date: str | None = None,
     end_date: str | None = None,
@@ -155,7 +163,7 @@ def get_deployment_failures(
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
     
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_packages(search: str | None = None) -> list[dict]:
     """Get PDQ packages optionally filtered by a case-insensitive name substring."""
 
@@ -183,7 +191,7 @@ def get_packages(search: str | None = None) -> list[dict]:
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
     
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_package_schedules(package_id: int | None = None) -> list[dict]:
     """Get all schedules along with their assigned packages. Optionally filter by package_id."""
 
@@ -218,7 +226,7 @@ def get_package_schedules(package_id: int | None = None) -> list[dict]:
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-@MCP_SERVER.tool()    
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)    
 def get_package_steps(package_id: int) -> list[dict]:
     """Get the sequence of steps for a specific package."""
 
@@ -241,7 +249,7 @@ def get_package_steps(package_id: int) -> list[dict]:
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_tables() -> list[str]:
     """Get a list of all the database tables excluding SQLite system tables."""
 
@@ -254,7 +262,7 @@ def get_tables() -> list[str]:
         return results
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_table_schema(table_name: str) -> list[dict]:
     """Get column names and types for a specific table."""
 
@@ -269,7 +277,7 @@ def get_table_schema(table_name: str) -> list[dict]:
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def get_target_lists(target_list_id: int | None = None) -> list[dict]:
     """Get all target lists or the specific computer targets inside a given target_list_id."""
 
@@ -300,7 +308,7 @@ def get_target_lists(target_list_id: int | None = None) -> list[dict]:
         return [_sanitize_row(row) for row in cursor.fetchall()]
 
 
-@MCP_SERVER.tool()
+@MCP_SERVER.tool(annotations=READ_ONLY_DB_ANNOTATIONS)
 def run_read_only_query(sql: str, max_rows: int = 100) -> list[dict]:
     """
     Execute a custom read-only SELECT or WITH query for questions not covered by standard tools.
