@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.eredden/pdq-deploy-mcp",
+  "title": "PDQ Deploy",
+  "description": "An MCP server for read-only access to the PDQ Deploy SQLite database.",
+  "repository": {
+    "url": "https://github.com/eredden/PDQ-Deploy-MCP",
+    "source": "github"
+  },
+  "version": "1.0.0",
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "pdq-deploy-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "named",
+          "name": "--db-path",
+          "description": "Path to the cloned PDQ Deploy SQLite database file.",
+          "format": "filepath",
+          "isRequired": true
+        }
+      ]
+    }
+  ]
+}
