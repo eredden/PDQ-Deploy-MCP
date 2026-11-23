@@ -1,3 +1,6 @@
 /csv
 /db
+/dist
+/.test-venv
+*.egg-info
 __pycache__

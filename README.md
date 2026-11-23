@@ -1,3 +1,5 @@
+<!-- mcp-name: io.github.eredden/pdq-deploy-mcp -->
+
 # PDQ Deploy MCP Server
 
 This project is an MCP (Model Context Protocol) server that provides **read-only** access to PDQ Deploy through a clone of its SQLite database. You can simply ask a question in plain English and have an AI agent query  PDQ Deploy *for you!* This works well for open-ended, complex problems and questions that you can wait on while eating lunch.
@@ -12,17 +14,19 @@ This project was created by [Evan Redden](https://www.linkedin.com/in/eredden).
 
 ## Installation
 
-Clone the repository locally:
+You can easily install this MCP server from PyPi using PIP:
+
+```bash
+pip install pdq-deploy-mcp
+```
+
+If you want to modify this repository, you can clone it and install the required modules instead:
 
 ```powershell
 git clone "https://github.com/eredden/PDQ-Deploy-MCP"
 
 cd "PDQ-Deploy-MCP"
-```
 
-Install the required MCP server dependencies from `pyproject.toml`:
-
-```powershell
 pip install -e .
 ```
 
@@ -53,7 +57,7 @@ If you are using the `.mcp.json` config provided for GitHub Copilot in this repo
 You can run this MCP server manually using the following command:
 
 ```bash
-python ".\src\server.py" --db-path ".\path\to\your\Database.db"
+pdq-deploy-mcp --db-path ".\path\to\your\Database.db"
 ```
 
 As for how to integrate it with other AI coding assistants, figure it out! Feel free to contribute information here if you find a way to do this.

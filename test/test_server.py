@@ -2,8 +2,6 @@
 
 from argparse import ArgumentParser
 import asyncio
-from pathlib import Path
-import sys
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -19,9 +17,8 @@ async def main():
     args = parser.parse_args()
 
     server_params = StdioServerParameters(
-        command=sys.executable,
+        command="pdq-deploy-mcp",
         args=[
-            "./src/server.py",
             "--db-path",
             args.db_path,
         ],

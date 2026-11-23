@@ -4,8 +4,9 @@
       "type": "local",
       "command": "python",
       "args": [
-        "./src/server.py",
-        "--db-path",
+        "-m", 
+        "pdq_deploy_mcp.server", 
+        "--db-path", 
         "./db/Database.db"
       ],
       "tools": ["*"]
